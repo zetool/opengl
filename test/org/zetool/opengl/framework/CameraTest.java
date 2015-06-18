@@ -2,7 +2,6 @@
 package org.zetool.opengl.framework;
 
 import junit.framework.TestCase;
-import org.zetool.opengl.framework.Camera;
 
 /**
  *
