@@ -15,7 +15,7 @@
             <reference>
                 <foreign-project>zetool-common</foreign-project>
                 <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
+                <script>build-nb.xml</script>
                 <target>jar</target>
                 <clean-target>clean</clean-target>
                 <id>jar</id>
@@ -23,7 +23,7 @@
             <reference>
                 <foreign-project>zetool-math</foreign-project>
                 <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
+                <script>nbbuild.xml</script>
                 <target>jar</target>
                 <clean-target>clean</clean-target>
                 <id>jar</id>
