@@ -11,12 +11,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package org.zetool.opengl.bsp;
 
-import org.zetool.common.algorithm.Algorithm;
+import org.zetool.common.algorithm.AbstractAlgorithm;
 import org.zetool.math.vectormath.Plane;
 import org.zetool.math.vectormath.Vector3;
 import java.util.LinkedList;
@@ -28,7 +28,7 @@ import org.zetool.math.Sign;
  *
  * @author Jan-Philipp Kappmeier
  */
-public class BinarySpacePartitioningTreeBuilder extends Algorithm<DynamicTriangleMesh, BspTree> {
+public class BinarySpacePartitioningTreeBuilder extends AbstractAlgorithm<DynamicTriangleMesh, BspTree> {
 	final static double eps = 0.000076;
 	private Random rand = new Random();
 	private Sign signTemp;
