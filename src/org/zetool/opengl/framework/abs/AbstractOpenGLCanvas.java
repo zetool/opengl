@@ -13,7 +13,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-
 package org.zetool.opengl.framework.abs;
 
 import com.sun.opengl.util.Animator;
@@ -42,281 +41,305 @@ import org.zetool.opengl.helper.Util;
  */
 abstract public class AbstractOpenGLCanvas extends GLCanvas implements GLEventListener, OpenGLRenderer, Animatable, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
-	protected int clearBits = GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT;
-	protected Animator animator;
-	private int maxFPS = 200;
-	private long lastFrameTime = 0;
-	private long animationStartTime = 0;
-	private int fps = 0;
-	private int frameCount = 0;
-	private long deltaTime;
-	protected long lastTime = 0;
-	protected GL gl;
-	protected GLU glu;
-	private boolean loop = false;
+    protected int clearBits = GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT;
+    protected Animator animator;
+    private int maxFPS = 200;
+    private long lastFrameTime = 0;
+    private long animationStartTime = 0;
+    private int fps = 0;
+    private int frameCount = 0;
+    private long deltaTime;
+    protected long lastTime = 0;
+    protected GL gl;
+    protected GLU glu;
+    private boolean loop = false;
 
-	/**
-	 *
-	 */
-	public AbstractOpenGLCanvas() {
-		super( new GLCapabilities() );
-		super.setBackground( Color.black );
-		addGLEventListener( this );
-		animator = new FPSAnimator( this, maxFPS );
-	}
+    /**
+     *
+     */
+    public AbstractOpenGLCanvas() {
+        super(new GLCapabilities());
+        super.setBackground(Color.black);
+        addGLEventListener(this);
+        animator = new FPSAnimator(this, maxFPS);
+    }
 
-	/**
-	 *
-	 * @param caps
-	 */
-	public AbstractOpenGLCanvas( GLCapabilities caps ) {
-		super( caps );
-		super.setBackground( Color.black );
-		addGLEventListener( this );
-		animator = new Animator( this );
-	}
+    /**
+     *
+     * @param caps
+     */
+    public AbstractOpenGLCanvas(GLCapabilities caps) {
+        super(caps);
+        super.setBackground(Color.black);
+        addGLEventListener(this);
+        animator = new Animator(this);
+    }
 
-	/**
-	 * Starts animation and resets the counter.
-	 */
-	public void startAnimation() {
-		animationStartTime = System.nanoTime();
-		animator.start();
-		//animator.setRunAsFastAsPossible( true );
-		lastTime = System.nanoTime();
-	}
+    /**
+     * Starts animation and resets the counter.
+     */
+    public void startAnimation() {
+        animationStartTime = System.nanoTime();
+        animator.start();
+        //animator.setRunAsFastAsPossible( true );
+        lastTime = System.nanoTime();
+    }
 
-	/**
-	 * Stops the animation.
-	 */
-	public void stopAnimation() {
-		animator.stop();
-		fps = 0;
-	}
+    /**
+     * Stops the animation.
+     */
+    public void stopAnimation() {
+        animator.stop();
+        fps = 0;
+    }
 
-	/**
-	 * Decides, wheather animation is turned on or of.
-	 * @return {@code true} if animation is on, {@code false} otherwise
-	 */
-	public final boolean isAnimating() {
-		return animator.isAnimating();
-	}
+    /**
+     * Decides, wheather animation is turned on or of.
+     *
+     * @return {@code true} if animation is on, {@code false} otherwise
+     */
+    public final boolean isAnimating() {
+        return animator.isAnimating();
+    }
 
-	public boolean isLoop() {
-		return loop;
-	}
+    public boolean isLoop() {
+        return loop;
+    }
 
-	public void setLoop( boolean loop ) {
-		this.loop = loop;
-	}
+    public void setLoop(boolean loop) {
+        this.loop = loop;
+    }
 
-	/**
-	 * Sets the maximal framerate per second.
-	 * @param maxFPS the framerate
-	 */
-	public final void setMaxFPS( int maxFPS ) {
-		this.maxFPS = maxFPS;
-		if( isAnimating() ) {
-			animator.stop();
-			animator = new FPSAnimator( this, maxFPS );
-			startAnimation();
-		} else
-			animator = new FPSAnimator( this, maxFPS );
-	}
+    /**
+     * Sets the maximal framerate per second.
+     *
+     * @param maxFPS the framerate
+     */
+    public final void setMaxFPS(int maxFPS) {
+        this.maxFPS = maxFPS;
+        if (isAnimating()) {
+            animator.stop();
+            animator = new FPSAnimator(this, maxFPS);
+            startAnimation();
+        } else {
+            animator = new FPSAnimator(this, maxFPS);
+        }
+    }
 
-	/**
-	 * Returns the maximal allowed framerate per second.
-	 * @return the maximal allowed framerate per second
-	 */
-	public final int getMaxFPS() {
-		return maxFPS;
-	}
+    /**
+     * Returns the maximal allowed framerate per second.
+     *
+     * @return the maximal allowed framerate per second
+     */
+    public final int getMaxFPS() {
+        return maxFPS;
+    }
 
-	/**
-	 * Returns the time passed in nano seconds since the last frame was drawn.
-	 * @return the time passed in nano seconds since the last frame was drawn
-	 */
-	public long getDeltaTime() {
-		return deltaTime;
-	}
+    /**
+     * Returns the time passed in nano seconds since the last frame was drawn.
+     *
+     * @return the time passed in nano seconds since the last frame was drawn
+     */
+    public long getDeltaTime() {
+        return deltaTime;
+    }
 
-	/**
-	 * Returns the elapsed time in nano seconds since the animation was started.
-	 * @return the elapsed time in nano seconds since the animation was started
-	 */
-	public long getTimeSinceStart() {
-		return lastTime - animationStartTime;
-	}
+    /**
+     * Returns the elapsed time in nano seconds since the animation was started.
+     *
+     * @return the elapsed time in nano seconds since the animation was started
+     */
+    public long getTimeSinceStart() {
+        return lastTime - animationStartTime;
+    }
 
-	/**
-	 * Returns the current frame rate per second.
-	 * @return the current frame rate per second
-	 */
-	public final int getFPS() {
-		return fps;
-	}
+    /**
+     * Returns the current frame rate per second.
+     *
+     * @return the current frame rate per second
+     */
+    public final int getFPS() {
+        return fps;
+    }
 
-	/**
-	 * Computes the current frame rate and updates the elapsed time from the last
-	 * rendered frame. This method should be called in the display-method if
-	 * animation is on.
-	 */
-	final public void computeFPS() {
-		// calculate real FPS and delay time for animation
-		final long currentTime = System.nanoTime();
-		lastTime = currentTime;
-		if( currentTime - lastFrameTime >= Conversion.secToNanoSeconds ) {
-			lastFrameTime = currentTime;
-			fps = frameCount;
-			frameCount = 0;
-		} else
-			frameCount++;
-	}
+    /**
+     * Computes the current frame rate and updates the elapsed time from the last rendered frame. This method should be
+     * called in the display-method if animation is on.
+     */
+    final public void computeFPS() {
+        // calculate real FPS and delay time for animation
+        final long currentTime = System.nanoTime();
+        lastTime = currentTime;
+        if (currentTime - lastFrameTime >= Conversion.SEC_TO_NANO_SECONDS) {
+            lastFrameTime = currentTime;
+            fps = frameCount;
+            frameCount = 0;
+        } else {
+            frameCount++;
+        }
+    }
 
-	public void animate() {
-		final long currentTime = System.nanoTime();
-		deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
+    public void animate() {
+        final long currentTime = System.nanoTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
-	}
+    }
 
-	/**
-	 * This methods is used to draw our stuff to the GL context. It is called
-	 * every frame.
-	 * @param drawable the GL context that we can use
-	 */
-	public void display( GLAutoDrawable drawable ) {
-		// compute real FPS and delay time for animation
-		this.gl = drawable.getGL();
-		if( animator.isAnimating() == true )
-			animate();
-		gl.glClear( clearBits );
-	}
+    /**
+     * This methods is used to draw our stuff to the GL context. It is called every frame.
+     *
+     * @param drawable the GL context that we can use
+     */
+    public void display(GLAutoDrawable drawable) {
+        // compute real FPS and delay time for animation
+        this.gl = drawable.getGL();
+        if (animator.isAnimating() == true) {
+            animate();
+        }
+        gl.glClear(clearBits);
+    }
 
-	/**
-	 * Initializes this {@code OpenGL} component. This method is called directly after
-	 * the component is created. Do all you init-gfx stuff here.
-	 * @param drawable the GL context that we can use
-	 */
-	final public void init( GLAutoDrawable drawable ) {
-		this.initGFX( drawable );
-	}
+    /**
+     * Initializes this {@code OpenGL} component. This method is called directly after the component is created. Do all
+     * you init-gfx stuff here.
+     *
+     * @param drawable the GL context that we can use
+     */
+    final public void init(GLAutoDrawable drawable) {
+        this.initGFX(drawable);
+    }
 
-	/**
-	 * This method is called everytime the GL context is resized. Calculates the
-	 * current viewport and aspect ratio of the visible area.
-	 * @param drawable the GL context that we can use
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @param width the width of the context
-	 * @param height the height of the context
-	 */
-	final public void reshape( GLAutoDrawable drawable, int x, int y, int width, int height ) {
-    updateViewport( drawable, x, y, width, height );
-	}
+    /**
+     * This method is called everytime the GL context is resized. Calculates the current viewport and aspect ratio of
+     * the visible area.
+     *
+     * @param drawable the GL context that we can use
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param width the width of the context
+     * @param height the height of the context
+     */
+    final public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        updateViewport(drawable, x, y, width, height);
+    }
 
-	/**
-	 * Called everytime when the mode or the device of the GL context are changed.
-	 * <p>This method must not to be implemented as it is not yet supported by
-	 * JOGL!</p>
-	 * @param drawable the GL context that we can use
-	 * @param modeChanged true if mode has changed
-	 * @param deviceChanged true if display device has changed
-	 */
-	final public void displayChanged( GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged ) {
-	}
+    /**
+     * Called everytime when the mode or the device of the GL context are changed.
+     * <p>
+     * This method must not to be implemented as it is not yet supported by JOGL!</p>
+     *
+     * @param drawable the GL context that we can use
+     * @param modeChanged true if mode has changed
+     * @param deviceChanged true if display device has changed
+     */
+    final public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
+    }
 
-	public int getClearBits() {
-		return clearBits;
-	}
+    public int getClearBits() {
+        return clearBits;
+    }
 
-	public void setClearBits( int clear ) {
-		this.clearBits = clear;
-	}
+    public void setClearBits(int clear) {
+        this.clearBits = clear;
+    }
 
-	public void useListener() {
-		useKeyListener();
-		useMouseListener();
-		useMouseMotionListener();
-		useMouseWheelListener();
-	}
+    public void useListener() {
+        useKeyListener();
+        useMouseListener();
+        useMouseMotionListener();
+        useMouseWheelListener();
+    }
 
-	public void removeListener() {
-		removeKeyListener( this );
-		removeMouseListener( this );
-		removeMouseMotionListener( this );
-		removeMouseWheelListener( this );
-	}
+    public void removeListener() {
+        removeKeyListener(this);
+        removeMouseListener(this);
+        removeMouseMotionListener(this);
+        removeMouseWheelListener(this);
+    }
 
-	public void useKeyListener() {
-		addKeyListener( this );
-	}
+    public void useKeyListener() {
+        addKeyListener(this);
+    }
 
-	public void useMouseListener() {
-		addMouseListener( this );
-	}
+    public void useMouseListener() {
+        addMouseListener(this);
+    }
 
-	public void useMouseMotionListener() {
-		this.addMouseMotionListener( this );
-	}
+    public void useMouseMotionListener() {
+        this.addMouseMotionListener(this);
+    }
 
-	public void useMouseWheelListener() {
-		addMouseWheelListener( this );
-	}
+    public void useMouseWheelListener() {
+        addMouseWheelListener(this);
+    }
 
-	public void keyTyped( KeyEvent e ) {
-	}
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
 
-	public void keyPressed( KeyEvent e ) {
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
 
-	public void keyReleased( KeyEvent e ) {
-	}
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 
-	public void mouseClicked( MouseEvent e ) {
-		requestFocusInWindow();
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        requestFocusInWindow();
+    }
 
-	public void mousePressed( MouseEvent e ) {
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
 
-	public void mouseReleased( MouseEvent e ) {
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
 
-	public void mouseEntered( MouseEvent e ) {
-	}
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
 
-	public void mouseExited( MouseEvent e ) {
-	}
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 
-	public void mouseDragged( MouseEvent e ) {
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+    }
 
-	public void mouseMoved( MouseEvent e ) {
-	}
+    @Override
+    public void mouseMoved(MouseEvent e) {
+    }
 
-	public void mouseWheelMoved( MouseWheelEvent e ) {
-	}
-	/**
-	 * Prints out all error messages that are in the error queue to
-	 * {@code System.err}.
-	 */
-	protected void printErrors() {
-		printErrors( System.err );
-	}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+    }
 
-	/**
-	 * Gives out all error messages to a submitted {@link PrintStream}.
-	 * @param stream
-	 */
-	protected void printErrors( PrintStream stream ) {
-		Util.printErrors( gl, stream );
-	}
+    /**
+     * Prints out all error messages that are in the error queue to {@code System.err}.
+     */
+    protected void printErrors() {
+        printErrors(System.err);
+    }
 
-	@Override
-	public void setBackground( Color c ) {
-		super.setBackground( c );
-		if( gl != null )
-			gl.glClearColor( c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() );
-	}
+    /**
+     * Gives out all error messages to a submitted {@link PrintStream}.
+     *
+     * @param stream
+     */
+    protected void printErrors(PrintStream stream) {
+        Util.printErrors(gl, stream);
+    }
+
+    @Override
+    public void setBackground(Color c) {
+        super.setBackground(c);
+        if (gl != null) {
+            gl.glClearColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+        }
+    }
 }
