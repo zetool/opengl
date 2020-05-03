@@ -11,6 +11,7 @@ hs_err_pid*
 
 # IDE files
 nbproject/
+nb-configuration.xml
 
 # build artifacts
 target/
