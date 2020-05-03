@@ -28,13 +28,17 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.gl2.GLUgl2;
 
 /**
  * A class used to load textures from the hard disk and to activate them in {@code OpenGL}.
+ *
+ * Supports OpenGL 2 profile by default.
  *
  * @author Jan-Philipp Kappmeier
  */
@@ -43,7 +47,8 @@ public class TextureManager {
     private static TextureManager instance;
     private Map<String, Texture> textures;
     private GL2 gl;
-    private GLU glu;
+    /** Initialize OpenGL Utility Library to profile version 2. Can be changed by {@link #setGLU(javax.media.opengl.glu.GLU)}. */
+    private GLU glu = new GLUgl2();
 
     private TextureManager() {
         textures = new HashMap<>();
@@ -98,20 +103,19 @@ public class TextureManager {
             ByteBuffer textureBuffer = convertImageData(bufferedImage, tex);
             //if(target == GL.GL_TEXTURE_2D ) {
             gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-//		Values for GL_TEXTURE_MIN_FILTER
-//    GL.GL_NEAREST;	// next value in manhatten metric
-//    GL.GL_LINEAR; // meadian of the four nearest texture element
-//    GL.GL_NEAREST_MIPMAP_NEAREST;	// selects mip map that fits best and criteria from GL_NEAREST
-//    GL.GL_LINEAR_MIPMAP_NEAREST;	// selects mip map that fits best and criteria from GL_LINEAR
-//    GL.GL_NEAREST_MIPMAP_LINEAR;	// selects the two mip maps that fit best and uses criteria fom GL_NEAREST
-//    GL.GL_LINEAR_MIPMAP_LINEAR; 	// selects the two mip maps that fit best and uses critera fom GL_LINEAR. the final value is the median
+            // Values for GL_TEXTURE_MIN_FILTER GL.GL_NEAREST; // next value in manhatten metric
+//            GL.GL_LINEAR; // meadian of the four nearest texture element
+//            GL.GL_NEAREST_MIPMAP_NEAREST; // selects mip map that fits best and criteria from GL_NEAREST
+//            GL.GL_LINEAR_MIPMAP_NEAREST; // selects mip map that fits best and criteria from GL_LINEAR
+//            GL.GL_NEAREST_MIPMAP_LINEAR; // selects the two mip maps that fit best and uses criteria fom GL_NEAREST
+//            GL.GL_LINEAR_MIPMAP_LINEAR; 	// selects the two mip maps that fit best and uses critera fom GL_LINEAR. the final value is the median
 
             gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-//		Values for GL_TEXTURE_MAG_FILTER
-//    GL.GL_NEAREST;	// next value in manhatten metric
-//    GL.GL_LINEAR; // meadian of the four nearest texture element
+            // Values for GL_TEXTURE_MAG_FILTER
+//            GL.GL_NEAREST; // next value in manhatten metric
+//            GL.GL_LINEAR; // meadian of the four nearest texture element
             //}
-            int dstPixelFormat = GL.GL_RGB; // A
+            int dstPixelFormat = GL.GL_RGB; 
             //gl.glTexImage2D( GL.GL_TEXTURE_2D, 0, dstPixelFormat, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, srcPixelFormat, GL.GL_UNSIGNED_BYTE, textureBuffer.rewind() );
             //glu.gluBuild2DMipmaps( GL.GL_TEXTURE_2D, dstPixelFormat, get2Fold(bufferedImage.getWidth()), get2Fold(bufferedImage.getHeight()), srcPixelFormat, GL.GL_UNSIGNED_BYTE, textureBuffer );
             glu.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, dstPixelFormat, bufferedImage.getWidth(), bufferedImage.getHeight(), srcPixelFormat, GL.GL_UNSIGNED_BYTE, textureBuffer.rewind());
@@ -141,7 +145,7 @@ public class TextureManager {
         ai[2] = 8;
         ColorModel glColorModel = new ComponentColorModel(java.awt.color.ColorSpace.getInstance(1000), ai, false, false, 1, 0);
 
-		//texture.setTextureHeight( texHeight );
+        //texture.setTextureHeight( texHeight );
         //texture.setTextureWidth( texWidth );
         BufferedImage texImage;
         if (bufferedImage.getColorModel().hasAlpha()) {
@@ -171,37 +175,6 @@ public class TextureManager {
         textures = new HashMap<>(capacity);
     }
 
-//	public void load( String texName, String fileName ) {
-//		Texture texture;
-//		try {
-//			System.err.println( "Loading texture..." );
-//			File texFile = new File( fileName );
-//			//texture = TextureIO.newTexture( texFile, true );
-//			// Write the loaded texture again to the harddisk!
-//			//File texFileOut1 = new File( fileName + "_geschrieben.jpg" );
-//			//File texFileOut2 = new File( fileName + "_geschrieben.tga" );
-//			//File texFileOut3 = new File( fileName + "_geschrieben.bmp" );
-//			//File texFileOut4 = new File( fileName + "_geschrieben.dds" );
-//			//File texFileOut5 = new File( fileName + "_geschrieben.gif" );
-//			//TextureIO.write( texture, texFileOut1 );
-//			//TextureIO.write( texture, texFileOut2 );
-//			//TextureIO.write( texture, texFileOut3 );
-//			//TextureIO.write( texture, texFileOut4 );
-//			//TextureIO.write( texture, texFileOut5 );
-//			
-//			System.err.println( "Texture estimated memory size = " + texture.getEstimatedMemorySize() );
-//		} catch( IOException e ) {
-//			e.printStackTrace();
-//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//			e.printStackTrace( new PrintStream( bos ) );
-//			JOptionPane.showMessageDialog( null,
-//							bos.toString(),
-//							"Error loading texture",
-//							JOptionPane.ERROR_MESSAGE );
-//			return;
-//		}
-//		add( texName, texture );
-//	}
     public void add(String texName, Texture tex) {
         textures.put(texName, tex);
     }

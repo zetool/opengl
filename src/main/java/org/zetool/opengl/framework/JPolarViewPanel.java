@@ -13,17 +13,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-
 package org.zetool.opengl.framework;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.gl2.GLUgl2;
+
 import org.zetool.opengl.helper.ProjectionHelper;
 
 /**
@@ -31,6 +33,7 @@ import org.zetool.opengl.helper.ProjectionHelper;
  * @author Jan-Philipp Kappmeier
  */
 public class JPolarViewPanel extends JOpenGLCanvas {
+
     private double twistAngle = 0;
     private double azimAngle = 0;
     private double incAngle = 0;
@@ -46,88 +49,91 @@ public class JPolarViewPanel extends JOpenGLCanvas {
     private int initMouseX;
     private int initMouseY;
     private boolean mouseMove = false;
-    
+
     /**
-     * 
+     *
      */
     public JPolarViewPanel() {
         super();
     }
 
     /**
-     * 
+     *
      * @param caps
      */
-    public JPolarViewPanel( GLCapabilities caps ) {
-        super( caps );
+    public JPolarViewPanel(GLCapabilities caps) {
+        super(caps);
     }
 
-
     @Override
-    public void updateViewport( GLAutoDrawable drawable, int x, int y, int width, int height ) {
-        super.updateViewport( drawable, x, y, width, height );    // calculate viewport
+    public void updateViewport(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        super.updateViewport(drawable, x, y, width, height); // calculate viewport
         GL2 gl = drawable.getGL().getGL2();
 
-        if( height <= 0 ) // avoid a divide by zero error!
+        if (height <= 0) {
+            // avoid a divide by zero error!
             height = 1;
+        }
 
         this.viewportWidth = width;
         this.viewportHeight = height;
 
-        if( distance < 0 )
+        if (distance < 0) {
             distance = nearDist + (farDist - nearDist) / 2.0;
+        }
 
-        setProjection( gl );
-        gl.glLoadIdentity();                                    // Load identity matrix
+        setProjection(gl);
+        gl.glLoadIdentity(); // Load identity matrix
     }
 
-    private void setProjection( GL2 gl ) {
+    private void setProjection(GL2 gl) {
         // Set up projection matrices for 2d-like orthogonal projection
-        final float aspect = (float)viewportWidth / (float)viewportHeight;
-        GLU glu = new GLU();
-        gl.glMatrixMode( GL2.GL_PROJECTION );
+        final float aspect = (float) viewportWidth / (float) viewportHeight;
+        GLU glu = new GLUgl2();
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective( 45.0, aspect, nearDist, farDist );
-        ProjectionHelper.setViewPolar( gl, distance, azimAngle, incAngle, twistAngle );
-        
+        glu.gluPerspective(45.0, aspect, nearDist, farDist);
+        ProjectionHelper.setViewPolar(gl, distance, azimAngle, incAngle, twistAngle);
+
         // We need to reset the model/view matrix (and swith to the mode!)
-        gl.glMatrixMode(GL2.GL_MODELVIEW);            // Set model/view matrix-mode
+        gl.glMatrixMode(GL2.GL_MODELVIEW); // Set model/view matrix-mode
         updateProjection = false;
     }
 
     /**
-
+     *
      * @param drawable
      */
     @Override
-    public void display( GLAutoDrawable drawable ) {
-        super.display( drawable );    // let clear the screen
+    public void display(GLAutoDrawable drawable) {
+        super.display(drawable);    // let clear the screen
 
-        if( updateProjection )
-            setProjection( gl );
+        if (updateProjection) {
+            setProjection(gl);
+        }
     }
 
     @Override
-    public void keyPressed( KeyEvent e ) {
+    public void keyPressed(KeyEvent e) {
         final double angleStep = 2.5;
-        switch( e.getKeyCode() ) {
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                azimAngle = ( azimAngle + angleStep ) % 360.0;
+                azimAngle = (azimAngle + angleStep) % 360.0;
                 break;
             case KeyEvent.VK_RIGHT:
-                azimAngle = ( azimAngle - angleStep ) % 360.0;
+                azimAngle = (azimAngle - angleStep) % 360.0;
                 break;
             case KeyEvent.VK_UP:
-                incAngle = ( incAngle + angleStep ) % 360.0;
+                incAngle = (incAngle + angleStep) % 360.0;
                 break;
             case KeyEvent.VK_DOWN:
-                incAngle = ( incAngle - angleStep ) % 360.0;
+                incAngle = (incAngle - angleStep) % 360.0;
                 break;
             case KeyEvent.VK_T:
-                twistAngle = ( twistAngle + angleStep ) % 360.0;
+                twistAngle = (twistAngle + angleStep) % 360.0;
                 break;
             case KeyEvent.VK_Z:
-                twistAngle = ( twistAngle - angleStep ) % 360.0;
+                twistAngle = (twistAngle - angleStep) % 360.0;
                 break;
             case KeyEvent.VK_PLUS:
                 distance -= speed;
@@ -142,79 +148,82 @@ public class JPolarViewPanel extends JOpenGLCanvas {
 
     @Override
     public void mousePressed(MouseEvent e) {
-    initMouseX = e.getX();
-    initMouseY = e.getY();
-    //if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
-        if( e.getButton() == MouseEvent.BUTTON1 )
-      mouseMove = true;
-    //}
-  }
+        initMouseX = e.getX();
+        initMouseY = e.getY();
+        //if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mouseMove = true;
+        }
+        //}
+    }
 
     @Override
-  public void mouseReleased(MouseEvent e) {
-    //if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
-        if( e.getButton() == MouseEvent.BUTTON1 )
-      mouseMove = false;
-    //}
-  }
-    
+    public void mouseReleased(MouseEvent e) {
+        //if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mouseMove = false;
+        }
+        //}
+    }
+
     @Override
-  public void mouseDragged(MouseEvent e) {
-        if( !mouseMove )
+    public void mouseDragged(MouseEvent e) {
+        if (!mouseMove) {
             return;
-    int x = e.getX();
-    int y = e.getY();
-    Dimension size = e.getComponent().getSize();
+        }
+        int x = e.getX();
+        int y = e.getY();
+        Dimension size = e.getComponent().getSize();
 
-    float twist = 360.0f * ( (float)(x-initMouseX)/(float)size.width);    // Y-Move
-    float inc = 360.0f * ( (float)(initMouseY-y)/(float)size.height);        // X-Move
-    
-    initMouseX = x;
-    initMouseY = y;
+        float twist = 360.0f * ((float) (x - initMouseX) / (float) size.width); // Y-Move
+        float inc = 360.0f * ((float) (initMouseY - y) / (float) size.height); // X-Move
+
+        initMouseX = x;
+        initMouseY = y;
 
         twistAngle += twist;
         incAngle += inc;
-        
+
         updateProjection = true;
-  }
-    
+    }
+
     @Override
-    public void mouseWheelMoved( MouseWheelEvent e ) {
+    public void mouseWheelMoved(MouseWheelEvent e) {
         distance += speed * e.getUnitsToScroll();
         updateProjection = true;
         repaint();
     }
-    
+
     // Getter and setter
     public double getMinDistance() {
         return minDistance;
     }
-    
-    public void setMinDistance( double minDistnace ) {
+
+    public void setMinDistance(double minDistnace) {
         this.minDistance = minDistnace;
     }
 
     public double getMaxDistance() {
         return maxDistance;
     }
-    
-    public void setMaxDistance( double maxDistnace ) {
+
+    public void setMaxDistance(double maxDistnace) {
         this.maxDistance = maxDistnace;
     }
-    
+
     public double getSpeed() {
         return speed;
     }
-    
-    public void setSpeed( double speed ) {
+
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
-    
+
     public double getFarDist() {
         return farDist;
     }
 
-    public void setFarDist( double farDist ) {
+    public void setFarDist(double farDist) {
         this.farDist = farDist;
     }
 
@@ -222,8 +231,8 @@ public class JPolarViewPanel extends JOpenGLCanvas {
         return nearDist;
     }
 
-    public void setNearDist( double nearDist ) {
+    public void setNearDist(double nearDist) {
         this.nearDist = nearDist;
     }
-    
+
 }

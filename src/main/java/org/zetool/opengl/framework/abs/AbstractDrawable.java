@@ -16,10 +16,13 @@
 package org.zetool.opengl.framework.abs;
 
 import java.util.ArrayList;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.media.opengl.glu.gl2.GLUgl2;
+
 import org.zetool.opengl.drawingutils.GLVector;
 
 /**
@@ -31,11 +34,10 @@ import org.zetool.opengl.drawingutils.GLVector;
  */
 public abstract class AbstractDrawable<U extends AbstractDrawable<?, ?>, V extends AbstractControl<?, ?>> implements Drawable {
 
-    //private CullingTester tester;
-    protected static GLU glu = new GLU();
-    protected static GLUquadric quadObj = glu.gluNewQuadric();
-    protected static int individualDisplayMode = GLU.GLU_FILL;
-    //private boolean isInvalid;
+    /** Access to OpenGL Utility Library for implementing classes. Currently fixed on OpenGL 2 profile.*/
+    protected static final GLU GLU_INSTANCE = new GLUgl2();
+    /** Access to OpenGL Utility Library quadric object for implementing classes. */
+    protected static final GLUquadric GLU_QUADRIC = GLU_INSTANCE.gluNewQuadric();
     protected V control;
     protected int displayList = 0;
     protected boolean repaint = true;
@@ -46,7 +48,6 @@ public abstract class AbstractDrawable<U extends AbstractDrawable<?, ?>, V exten
     public AbstractDrawable(V control) {
         children = new ArrayList<>();
         this.control = control;
-        //update();
     }
 
     public void clear() {
@@ -71,15 +72,11 @@ public abstract class AbstractDrawable<U extends AbstractDrawable<?, ?>, V exten
      * @param gl
      */
     public void drawAllChildren(GL2 gl) {
-        for (U child : children) {
-            child.draw(gl);
-        }
+        children.forEach(child -> child.draw(gl));
     }
 
     public void staticDrawAllChildren(GL2 gl) {
-        for (U child : children) {
-            child.performStaticDrawing(gl);
-        }
+        children.forEach(child -> child.performStaticDrawing(gl));
     }
 
     @Override
