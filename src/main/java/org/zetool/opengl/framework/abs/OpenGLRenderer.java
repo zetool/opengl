@@ -23,11 +23,12 @@ import javax.media.opengl.GLAutoDrawable;
  */
 public interface OpenGLRenderer {
 
-	//public void renderScene( GLAutoDrawable drawable );
-	public void display( GLAutoDrawable drawable );	// inherited from GLEventListener
+    public void display(GLAutoDrawable drawable);	// inherited from GLEventListener
 
-	public void updateViewport( GLAutoDrawable drawable, int x, int y, int width, int height );
+    public void updateViewport(GLAutoDrawable drawable, int x, int y, int width, int height);
 
-	public void initGFX( GLAutoDrawable drawable );
-	//public void animate( );
+    public void initGFX(GLAutoDrawable drawable);
+
+    public void dispose(GLAutoDrawable drawable); // inherited from GLEventListener
+
 }

@@ -15,10 +15,6 @@
  */
 package org.zetool.opengl.framework.abs;
 
-import com.jogamp.opengl.util.Animator;
-import com.jogamp.opengl.util.AnimatorBase;
-import com.jogamp.opengl.util.FPSAnimator;
-import org.zetool.math.Conversion;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,12 +24,19 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.PrintStream;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.AnimatorBase;
+import com.jogamp.opengl.util.FPSAnimator;
+
+import org.zetool.math.Conversion;
 import org.zetool.opengl.helper.Util;
 
 /**
@@ -180,6 +183,7 @@ abstract public class AbstractOpenGLCanvas extends GLCanvas implements GLEventLi
         }
     }
 
+    @Override
     public void animate() {
         final long currentTime = System.nanoTime();
         deltaTime = currentTime - lastTime;
@@ -192,6 +196,7 @@ abstract public class AbstractOpenGLCanvas extends GLCanvas implements GLEventLi
      *
      * @param drawable the GL context that we can use
      */
+    @Override
     public void display(GLAutoDrawable drawable) {
         // compute real FPS and delay time for animation
         this.gl = drawable.getGL().getGL2();
@@ -207,6 +212,7 @@ abstract public class AbstractOpenGLCanvas extends GLCanvas implements GLEventLi
      *
      * @param drawable the GL context that we can use
      */
+    @Override
     final public void init(GLAutoDrawable drawable) {
         this.initGFX(drawable);
     }
@@ -221,8 +227,20 @@ abstract public class AbstractOpenGLCanvas extends GLCanvas implements GLEventLi
      * @param width the width of the context
      * @param height the height of the context
      */
+    @Override
     final public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         updateViewport(drawable, x, y, width, height);
+    }
+
+    /**
+     * Empty default implementation. Override to release OpenGL resources.
+     *
+     * {@inheritDoc}
+     *
+     * @param drawable the GL context that is rendered into
+     */
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
     }
 
     /**

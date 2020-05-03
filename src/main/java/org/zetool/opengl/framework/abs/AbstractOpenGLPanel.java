@@ -15,9 +15,6 @@
  */
 package org.zetool.opengl.framework.abs;
 
-import com.jogamp.opengl.util.AnimatorBase;
-import com.jogamp.opengl.util.FPSAnimator;
-import org.zetool.math.Conversion;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -26,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -33,6 +31,11 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.util.AnimatorBase;
+import com.jogamp.opengl.util.FPSAnimator;
+
+import org.zetool.math.Conversion;
 
 /**
  * By default depth buffer is used.
@@ -212,6 +215,17 @@ abstract public class AbstractOpenGLPanel extends GLJPanel implements GLEventLis
     @Override
     final public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         updateViewport(drawable, x, y, width, height);
+    }
+
+    /**
+     * Empty default implementation. Override to release OpenGL resources.
+     *
+     * {@inheritDoc}
+     *
+     * @param drawable the GL context that is rendered into
+     */
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
     }
 
     /**
