@@ -15,8 +15,6 @@
  */
 package org.zetool.opengl.bsp;
 
-import org.zetool.math.vectormath.Plane;
-import org.zetool.math.vectormath.Vector3;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -26,12 +24,16 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.gl2.GLUgl2;
 import javax.swing.JFrame;
+
 import org.zetool.math.Sign;
+import org.zetool.math.vectormath.Plane;
+import org.zetool.math.vectormath.Vector3;
 import org.zetool.opengl.framework.JMovingEyePanel;
 
 /**
@@ -109,7 +111,7 @@ public class BspMain extends JMovingEyePanel {
     public void updateViewport(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL2ES1 gl = drawable.getGL().getGL2ES1();
         if (glu == null) {
-            glu = new GLU();
+            glu = new GLUgl2();
         }
 
         if (height <= 0) // avoid a divide by zero error!
@@ -141,7 +143,7 @@ public class BspMain extends JMovingEyePanel {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         if (glu == null) {
-            glu = new GLU();
+            glu = new GLUgl2();
         }
 
         super.look();
@@ -255,9 +257,10 @@ public class BspMain extends JMovingEyePanel {
                 }
             }
 
-            if (tmp[i][i] == 0) /* no non-zero pivot.  the matrix is singular, which
-				shouldn't happen.  This means the user gave us a bad
-				matrix. */ {
+            if (tmp[i][i] == 0) {
+                /* no non-zero pivot.  the matrix is singular, which
+                shouldn't happen.  This means the user gave us a bad
+                matrix. */
                 return false;
             }
 

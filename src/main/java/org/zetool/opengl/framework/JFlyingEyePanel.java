@@ -18,10 +18,9 @@ package org.zetool.opengl.framework;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
-
-// Needs to be implemented, if really neccessary, i don't think so!
 import javax.media.opengl.glu.GLU;
-// for implementation details see demo 03.
+import javax.media.opengl.glu.gl2.GLUgl2;
+
 import org.zetool.math.vectormath.Vector3;
 
 /**
@@ -30,9 +29,9 @@ import org.zetool.math.vectormath.Vector3;
  */
 public class JFlyingEyePanel extends JOpenGLPanel {
 
-    protected Vector3 pos = new Vector3();								// position
-    protected Vector3 view = new Vector3(0, 0, 1);			// direction of view (z-axis)
-    protected Vector3 up = new Vector3(0, 1, 0);				// direction of up   (y-axis)
+    protected Vector3 pos = new Vector3(); // position
+    protected Vector3 view = new Vector3(0, 0, 1); // direction of view (z-axis)
+    protected Vector3 up = new Vector3(0, 1, 0); // direction of up   (y-axis)
     private int initMouseX;
     private int initMouseY;
     private boolean mouseMove;
@@ -66,9 +65,9 @@ public class JFlyingEyePanel extends JOpenGLPanel {
 
     @Override
     public void updateViewport(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        super.updateViewport(drawable, x, y, width, height);	// calculate viewport
+        super.updateViewport(drawable, x, y, width, height); // calculate viewport
         GL2 gl = drawable.getGL().getGL2();
-        GLU glu = new GLU();
+        GLU glu = new GLUgl2();
 
         if (height <= 0) // avoid a divide by zero error!
         {
@@ -83,11 +82,11 @@ public class JFlyingEyePanel extends JOpenGLPanel {
 
     //@Override
     //public void renderScene( GLAutoDrawable drawable ) {
-    //	super.renderScene( drawable );	// let clear the screen
+    //    super.renderScene( drawable ); // let clear the screen
     //}
     // look-method
     public void look() {
-        GLU glu = new GLU();
+        GLU glu = new GLUgl2();
         // set eye position and direction of view
         glu.gluLookAt(pos.x, pos.y, pos.z, pos.x - view.x, pos.y - view.y, pos.z - view.z, up.x, up.y, up.z);
     }
