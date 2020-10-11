@@ -13,7 +13,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-
 package org.zetool.opengl.framework.abs;
 
 import java.util.ArrayList;
@@ -23,63 +22,64 @@ import java.util.List;
 import javax.media.opengl.GL2;
 
 /**
- * 
+ *
  * @author Daniel R. Schmidt, Jan-Philipp Kappmeier
  *
  * @param <T> The type of the graphic object that is view by this class
  * @param <U> The type of the object in the data structure (the model) that is view by this class
  */
-public abstract class AbstractControl<T extends AbstractControl<?, ?>, U extends AbstractDrawable<?, ?>> implements control, Iterable<T> {
+public abstract class AbstractControl<T, U extends Drawable> implements control, Iterable<T> {
 
-	protected U view;
-	protected ArrayList<T> childControls;
+    protected U view;
+    protected ArrayList<T> childControls;
 
-	/**
-	 * No view is set. During construction process, a view must be set! Call
-	 * {@link #setView(U)}.
-	 */
-	protected AbstractControl() {
-		this.childControls = new ArrayList<T>();
-	}
+    /**
+     * No view is set. During construction process, a view must be set! Call {@link #setView(U)}.
+     */
+    protected AbstractControl() {
+        this.childControls = new ArrayList<>();
+    }
 
-	public AbstractControl( U controlled ) {
-		this.view = controlled;
-		this.childControls = new ArrayList<T>();
-	}
+    public AbstractControl(U controlled) {
+        this.view = controlled;
+        this.childControls = new ArrayList<>();
+    }
 
-	protected void setView( U view ) {
-		this.view = view;
-	}
+    protected void setView(U view) {
+        this.view = view;
+    }
 
-	public U getView() {
-		return view;
-	}
+    @Override
+    public U getView() {
+        return view;
+    }
 
-	public List<T> getChildControls() {
-		return Collections.unmodifiableList( childControls );//childControls;
-	}
+    public List<T> getChildControls() {
+        return Collections.unmodifiableList(childControls);
+    }
 
-	protected void add( T childControl ) {
-		childControls.add( childControl );
-	}
+    protected void add(T childControl) {
+        childControls.add(childControl);
+    }
 
-	protected void clear() {
-		childControls.clear();
-	}
+    protected void clear() {
+        childControls.clear();
+    }
 
-	public Iterator<T> iterator() {
-		return childControls.iterator();
-	}
+    @Override
+    public Iterator<T> iterator() {
+        return childControls.iterator();
+    }
 
-	public Iterator<T> fullIterator() {
-		return iterator();
-	}
+    public Iterator<T> fullIterator() {
+        return iterator();
+    }
 
-	public int size() {
-		return childControls.size();
-	}
+    public int size() {
+        return childControls.size();
+    }
 
-	public void draw( GL2 gl ) {
-		view.draw( gl );
-	}
+    public void draw(GL2 gl) {
+        view.draw(gl);
+    }
 }

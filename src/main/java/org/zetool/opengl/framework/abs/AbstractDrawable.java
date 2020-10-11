@@ -29,10 +29,11 @@ import org.zetool.opengl.drawingutils.GLVector;
  *
  *
  * @param <U> The type of the children view object
- * @param <V> The type of the associated control object
- * @author Jan-Philipp Kapmeier, Daniel Plümpe
+ * @param <V> the model
+ * @author Jan-Philipp Kapmeier
+ * @author Daniel Plümpe
  */
-public abstract class AbstractDrawable<U extends AbstractDrawable<?, ?>, V extends AbstractControl<?, ?>> implements Drawable {
+public abstract class AbstractDrawable<U extends Drawable, V> implements Drawable {
 
     /** Access to OpenGL Utility Library for implementing classes. Currently fixed on OpenGL 2 profile.*/
     protected static final GLU GLU_INSTANCE = new GLUgl2();
@@ -113,9 +114,6 @@ public abstract class AbstractDrawable<U extends AbstractDrawable<?, ?>, V exten
 
     public void performDrawing(GL2 gl) {
         drawAllChildren(gl);
-    }
-
-    public void performStaticDrawing(GL2 gl) {
     }
 
     @Override

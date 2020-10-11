@@ -36,6 +36,13 @@ public interface Drawable {
      * @param gl the graphics context
      */
     void draw(GL2 gl);
+    
+    /**
+     * 
+     * @param gl 
+     */
+    default void performStaticDrawing(GL2 gl) {        
+    }
 
     /**
      * Is called, whenever the environment has changed and the graphical representation of the object needs to be
