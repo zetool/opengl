@@ -26,14 +26,14 @@ import javax.media.opengl.glu.gl2.GLUgl2;
 import org.zetool.opengl.drawingutils.GLVector;
 
 /**
- *
+ * H
  *
  * @param <U> The type of the children view object
  * @param <V> the model
  * @author Jan-Philipp Kapmeier
  * @author Daniel Plümpe
  */
-public abstract class AbstractDrawable<U extends Drawable, V> implements Drawable {
+public abstract class AbstractDrawable<U extends Drawable, V> implements Drawable, HierarchyNode {
 
     /** Access to OpenGL Utility Library for implementing classes. Currently fixed on OpenGL 2 profile.*/
     protected static final GLU GLU_INSTANCE = new GLUgl2();

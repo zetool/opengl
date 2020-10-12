@@ -92,7 +92,4 @@ public class GLVector extends Vector3 implements Drawable {
     public void update() {
     }
 
-    @Override
-    public void delete() {
-    }
 }

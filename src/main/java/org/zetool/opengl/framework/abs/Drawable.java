@@ -15,7 +15,7 @@
  */
 package org.zetool.opengl.framework.abs;
 
-import javax.media.opengl.GL2;
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 /**
@@ -49,6 +49,4 @@ public interface Drawable {
      * changed.
      */
     void update();
-
-    void delete();
 }
