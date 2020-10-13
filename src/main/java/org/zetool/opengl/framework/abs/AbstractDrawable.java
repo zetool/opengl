@@ -39,16 +39,16 @@ public abstract class AbstractDrawable<U extends Drawable, V> implements Drawabl
     protected static final GLU GLU_INSTANCE = new GLUgl2();
     /** Access to OpenGL Utility Library quadric object for implementing classes. */
     protected static final GLUquadric GLU_QUADRIC = GLU_INSTANCE.gluNewQuadric();
-    protected V control;
+    protected V model;
     protected int displayList = 0;
     protected boolean repaint = true;
     protected boolean callChildren = true;
     protected GLVector position = new GLVector();
     protected ArrayList<U> children;
 
-    public AbstractDrawable(V control) {
+    public AbstractDrawable(V model) {
         children = new ArrayList<>();
-        this.control = control;
+        this.model = model;
     }
 
     public void clear() {
@@ -59,8 +59,8 @@ public abstract class AbstractDrawable<U extends Drawable, V> implements Drawabl
         children.add(child);
     }
 
-    public V getControl() {
-        return control;
+    public V getModel() {
+        return model;
     }
 
     public boolean isVisible() {
@@ -124,7 +124,7 @@ public abstract class AbstractDrawable<U extends Drawable, V> implements Drawabl
      */
     @Override
     public void delete() {
-        control = null;
+        model = null;
         children.clear();
     }
 }
