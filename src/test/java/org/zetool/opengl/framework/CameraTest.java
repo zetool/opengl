@@ -15,23 +15,25 @@
  */
 package org.zetool.opengl.framework;
 
-import junit.framework.TestCase;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
+
+import org.testng.annotations.Test;
 
 /**
  *
  * @author Jan-Philipp Kappmeier
  */
-public class CameraTest extends TestCase {
+public class CameraTest {
 
     /**
      * Checks wheather the setSpeed() method works correct, or not.
      *
      * @throws Exception
      */
-    public void testSpeed() throws Exception {
+    @Test
+    public void minAndMaxSpeed_areRespected() throws Exception {
         Camera tc = new Camera();
         tc.setMinSpeed(-10);
         tc.setMaxSpeed(20);
