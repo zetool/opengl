@@ -24,20 +24,19 @@ import javax.media.opengl.GLAutoDrawable;
 import org.zetool.opengl.drawingutils.GLVector;
 
 /**
- * A {@link Drawable} object that can contain other {@code Drawable}s as children.
+ * A {@link Drawable} object that can contain other {@code Drawable}s as children with static and dynamic part.
  *
  * @param <U>
  * @author Jan-Philipp Kappmeier
  */
-public abstract class HierarchyDrawable<U extends Drawable> implements Drawable, HierarchyNode {
+public abstract class HierarchyDrawable<U extends HierarchyDrawable> implements Drawable, HierarchyNode {
 
     private final GLVector position;
     protected ArrayList<U> children;
-    /**
-     * Whether the static structure has to be redrawn.
-     */
-    private boolean repaint = true;
-    protected int displayList = 0;
+
+    public HierarchyDrawable() {
+        this(new GLVector());
+    }
 
     public HierarchyDrawable(GLVector position) {
         this.position = position;
@@ -66,12 +65,37 @@ public abstract class HierarchyDrawable<U extends Drawable> implements Drawable,
     }
 
     /**
+     * Draws a given node in an OpenGL hierarchy. The following steps are executed:
+     * <ol>
+     * <li> Translate the position to the position of this hierarchy element.
+     * <li> Draw static parts of the hierarchy element.
+     * <li> Draw dynamic parts of the hierarchy element.
+     * <li> Recurse {@link #draw(javax.media.opengl.GL2) the drawing} for children.
+     * <li> Revert the translation back to the original position.
+     * </ol>
+     *
+     * @param gl the graphics context to draw into
+     */
+    @Override
+    public void draw(GL2 gl) {
+        beginDraw(gl);
+        performStaticDrawing(gl);
+        performDynamicDrawing(gl);
+        drawAllChildren(gl);
+        endDraw(gl);
+    }
+
+    /**
      * Calls {@link #draw( GLAutoDrawable) } for all contained objects.
      *
      * @param gl
      */
-    public void drawAllChildren(GL2 gl) {
+    protected void drawAllChildren(GL2 gl) {
         children.forEach(child -> child.draw(gl));
+    }
+
+    protected void dynamicDrawAllChildren(GL2 gl) {
+        children.forEach(child -> child.drawDynamic(gl));
     }
 
     /**
@@ -81,15 +105,8 @@ public abstract class HierarchyDrawable<U extends Drawable> implements Drawable,
      *
      * @param gl
      */
-    public void staticDrawAllChildren(GL2 gl) {
-        children.forEach(child -> child.performStaticDrawing(gl));
-    }
-
-    @Override
-    final public void draw(GL2 gl) {
-        beginDraw(gl);
-        performDrawing(gl);
-        endDraw(gl);
+    protected void staticDrawAllChildren(GL2 gl) {
+        children.forEach(child -> child.drawStatic(gl));
     }
 
     /**
@@ -98,7 +115,7 @@ public abstract class HierarchyDrawable<U extends Drawable> implements Drawable,
      *
      * @param gl
      */
-    public void beginDraw(GL2 gl) {
+    protected void beginDraw(GL2 gl) {
         gl.glPushMatrix();
         position.translate(gl);
     }
@@ -109,41 +126,30 @@ public abstract class HierarchyDrawable<U extends Drawable> implements Drawable,
      *
      * @param gl the {@code OpenGL} context on which it is drawn
      */
-    public void endDraw(GL2 gl) {
+    protected void endDraw(GL2 gl) {
         gl.glPopMatrix();
     }
 
-    // Drawing:
-    // erst staticDrawAllChildren
-    // Dann: drawAllChildren -> calls again staticDraw
-    // daraus folgt: doppelt gezeichnet
-    
-    
-    public void performDrawing(GL2 gl) {
-        if (repaint) {
-            performStaticDrawing(gl);
-        }
-
-        gl.glCallList(displayList);
-
-        drawAllChildren(gl);
+    protected final void drawDynamic(GL2 gl) {
+        beginDraw(gl);
+        performDynamicDrawing(gl);
+        dynamicDrawAllChildren(gl);
+        endDraw(gl);
     }
 
-    @Override
-    public void performStaticDrawing(GL2 gl) {
-        if (displayList <= 0) {
-            gl.glDeleteLists(displayList, 1);
-        }
-        displayList = gl.glGenLists(1);
-        gl.glNewList(displayList, GL2.GL_COMPILE);
+    protected final void drawStatic(GL2 gl) {
+        beginDraw(gl);
+        performStaticDrawing(gl);
         staticDrawAllChildren(gl);
-        gl.glEndList();
-        repaint = false;
+        endDraw(gl);
     }
+
+    abstract protected void performDynamicDrawing(GL2 gl);
+
+    abstract protected void performStaticDrawing(GL2 gl);
 
     @Override
     public void update() {
-        repaint = true;
     }
 
     /**

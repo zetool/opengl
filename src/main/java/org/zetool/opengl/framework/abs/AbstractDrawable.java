@@ -29,7 +29,7 @@ import org.zetool.opengl.drawingutils.GLVector;
  * @author Jan-Philipp Kapmeier
  * @author Daniel Plümpe
  */
-public abstract class AbstractDrawable<C extends Drawable, M> extends HierarchyDrawable<C> {
+public abstract class AbstractDrawable<C extends HierarchyDrawable, M> extends DefaultHierarchyNode<C> {
 
     /**
      * Access to OpenGL Utility Library for implementing classes. Currently fixed on OpenGL 2 profile.
