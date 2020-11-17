@@ -117,7 +117,7 @@
                 <version>3.0.0-M5</version>
                 <configuration>
                     <argLine>
-                        -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
+                            <argLine>@{argLine} -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
                     </argLine>
                 </configuration>
             </plugin>
