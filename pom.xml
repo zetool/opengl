@@ -69,6 +69,11 @@
             <artifactId>gluegen-rt</artifactId>
             <version>2.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.4.1</version>
+        </dependency>
         <!--
         Native bindings for GlueGen. Appends all native bindings. If required, specialized bindings can be added by
         specifying a classifier: <classifier>natives-linux-amd64</classifier>
