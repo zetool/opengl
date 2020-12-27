@@ -20,6 +20,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -59,6 +61,21 @@ public class HierarchyDrawableTest {
      */
     private final static List<HierarchyDrawable> CHILDREN = rangeClosed(1, 3)
             .mapToObj(unused -> mock(HierarchyDrawable.class, withSettings().useConstructor())).collect(toList());
+
+    /**
+     * Verify the node allows to iterate over all children.
+     */
+    @Test
+    public void iterator_returnsChildren() {
+        HierarchyDrawable mockedFixture = mock(HierarchyDrawable.class,
+                withSettings().useConstructor().defaultAnswer(CALLS_REAL_METHODS));
+
+        assertThat((Iterable<Object>) mockedFixture, is(emptyIterable()));
+
+        CHILDREN.forEach(mockedFixture::addChild);
+
+        assertThat((Iterable<Object>) mockedFixture, is(iterableWithSize(3)));
+    }
 
     /**
      * Verify that {@link HierarchyDrawable#draw(javax.media.opengl.GL2) } calls the required static and dynamic methods

@@ -17,6 +17,8 @@
 package org.zetool.opengl.framework.abs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -29,10 +31,10 @@ import org.zetool.opengl.drawingutils.GLVector;
  * @param <U>
  * @author Jan-Philipp Kappmeier
  */
-public abstract class HierarchyDrawable<U extends HierarchyDrawable> implements Drawable, HierarchyNode {
+public abstract class HierarchyDrawable<U extends HierarchyDrawable> implements Drawable, HierarchyNode<U> {
 
     private final GLVector position;
-    protected ArrayList<U> children;
+    protected final ArrayList<U> children;
 
     public HierarchyDrawable() {
         this(new GLVector());
@@ -41,6 +43,16 @@ public abstract class HierarchyDrawable<U extends HierarchyDrawable> implements 
     public HierarchyDrawable(GLVector position) {
         this.position = position;
         children = new ArrayList<>();
+    }
+
+    /**
+     * Returns an iterator over the children of type {@code T}.
+     *
+     * @return an iterator
+     */
+    @Override
+    public Iterator<U> iterator() {
+        return children.iterator();
     }
 
     /**
