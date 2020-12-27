@@ -71,10 +71,6 @@ public abstract class AbstractControl<T, U extends Drawable> implements control,
         return childControls.iterator();
     }
 
-    public Iterator<T> fullIterator() {
-        return iterator();
-    }
-
     public int size() {
         return childControls.size();
     }
