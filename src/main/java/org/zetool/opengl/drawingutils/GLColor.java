@@ -16,7 +16,9 @@
 package org.zetool.opengl.drawingutils;
 
 import java.awt.Color;
+
 import javax.media.opengl.GL2;
+
 import org.zetool.opengl.framework.abs.Drawable;
 
 /**
@@ -410,8 +412,39 @@ public final class GLColor implements Drawable {
         return "(" + Math.round(R * 255) + "," + Math.round(G * 255) + "," + Math.round(B * 255) + ")";
     }
 
-    public void delete() {
-
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.R) ^ (Double.doubleToLongBits(this.R) >>> 32));
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.G) ^ (Double.doubleToLongBits(this.G) >>> 32));
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.B) ^ (Double.doubleToLongBits(this.B) >>> 32));
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.A) ^ (Double.doubleToLongBits(this.A) >>> 32));
+        return hash;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GLColor other = (GLColor) obj;
+        if (Double.doubleToLongBits(this.R) != Double.doubleToLongBits(other.R)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.G) != Double.doubleToLongBits(other.G)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.B) != Double.doubleToLongBits(other.B)) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.A) == Double.doubleToLongBits(other.A);
+    }
+
+    
 }
