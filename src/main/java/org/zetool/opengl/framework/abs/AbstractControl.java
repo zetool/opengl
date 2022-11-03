@@ -45,6 +45,7 @@ public abstract class AbstractControl<T, U extends Drawable> implements control,
         this.childControls = new ArrayList<>();
     }
 
+    @Deprecated
     protected void setView(U view) {
         this.view = view;
     }
@@ -54,14 +55,17 @@ public abstract class AbstractControl<T, U extends Drawable> implements control,
         return view;
     }
 
+    @Deprecated
     public List<T> getChildControls() {
         return Collections.unmodifiableList(childControls);
     }
 
+    @Deprecated
     protected void add(T childControl) {
         childControls.add(childControl);
     }
 
+    @Deprecated
     protected void clear() {
         childControls.clear();
     }
